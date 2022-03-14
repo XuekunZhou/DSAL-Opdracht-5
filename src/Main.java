@@ -30,6 +30,9 @@ public class Main {
     public static void main(String[] args) {
         RouteCalc alg = new RouteCalc();
         alg.readSituation("1.txt");
-        System.out.println("test");
+        alg.printNumberOfDestinations();
+        alg.printDistances();
+        alg.printPackages();
+        alg.printDestinations();
     }
 }
