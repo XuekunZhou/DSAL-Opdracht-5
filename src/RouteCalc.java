@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.TooManyListenersException;
+import java.util.*;
 
 public class RouteCalc {
 
@@ -13,12 +12,28 @@ public class RouteCalc {
 
     private int EPOCHS;
     private int epochTeller;
-    private int KANDIDATEN;
+    private ArrayList<KandidaatRoute> KANDIDATEN;
+    private KandidaatRoute elite;
 
-    public RouteCalc(){}
+    public RouteCalc() {
+        KANDIDATEN = new ArrayList<>();
+    }
 
-    public RouteCalc(int epochs, int kandidaten){
+    public RouteCalc(int epochs, int kandidaten, int situatie) {
+        String file = situatie + ".txt";
+        readSituation(file);
+        KANDIDATEN = new ArrayList<>();
+        startSituatie(kandidaten);
+        epochTeller = 0;
 
+        bepaalRoute();
+
+        while (epochTeller < epochs) {
+            epochTeller++;
+
+            KANDIDATEN = mutaties(kandidaten);
+            bepaalRoute();
+        }
     }
 
     public void readSituation(String file){
@@ -48,23 +63,145 @@ public class RouteCalc {
         }
     }
 
+    public void bepaalRoute() {
+        Collections.sort(KANDIDATEN);
+        KandidaatRoute besteRoute = KANDIDATEN.get(0);
 
-    public void bepaalRoute(){}
+        if (elite == null) {
+            elite = besteRoute;
+        }
+        else {
+            if (besteRoute.compareTo(elite) == -1) {
+                elite = besteRoute;
+            }
+        }
 
-    public void evalueerKandidaat(KandidaatRoute kandidaatRoute){}
+        System.out.println("De beste route is:");
+        for (int punten : elite.get_route()) {
+            System.out.print(punten + " ");
+        }
+        System.out.println();
+        System.out.println("Score: " + elite.getScore());
+
+    }
+
+    public void evalueerKandidaat(KandidaatRoute kandidaatRoute) {
+        int score = 0;
+        int vorigePunt = 0;
+        for (int huidigePunt : kandidaatRoute.get_route()) {
+            int afstand = distances[vorigePunt][huidigePunt - 1];
+            score += afstand;
+            vorigePunt = huidigePunt - 1;
+        }
+        kandidaatRoute.setScore(score);
+    }
 
     public void evalueerEpoch(){}
 
-    public KandidaatRoute randomKandidaat() {
-        return null;
+    private ArrayList<Integer> destinationList() {
+        ArrayList<Integer> destinationList = new ArrayList<>();
+
+        for (int i = 1; i < destinations.length; i++) {
+            destinationList.add((destinations[i]));
+        }
+
+        return destinationList;
     }
 
-    public void startSituatie() {}
+    public KandidaatRoute randomKandidaat() {
+        KandidaatRoute kandidaatRoute = new KandidaatRoute();
+        ArrayList<Integer> destinationList = destinationList();
+        Collections.shuffle(destinationList);
+
+        int[] route = new int[destinations.length];
+        route[0] = destinations[0];
+        for (int i = 1; i < route.length; i++) {
+            route[i] = destinationList.get(i - 1);
+        }
+
+        kandidaatRoute.set_route(route);
+        return kandidaatRoute;
+    }
+
+    public void startSituatie(int kandidaten) {
+        for (int kandidaat = 0; kandidaat < kandidaten; kandidaat++) {
+            KandidaatRoute route = randomKandidaat();
+            evalueerKandidaat(route);
+            KANDIDATEN.add(route);
+        }
+    }
 
     public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {
-        return null;
+        Random rand = new Random();
+
+        ArrayList<Integer> array = new ArrayList<>();
+
+        for (int punten : kandidaatRoute.get_route()) {
+            array.add(punten);
+        }
+
+        int randIndex = 0;
+        while (randIndex == 0) {
+            randIndex = rand.nextInt(array.size() - 1);
+        }
+
+        array.add(rand.nextInt(randIndex), rand.nextInt(TOTALDEST -1) + 1);
+
+        int[] nieuweRoute = new int[array.size()];
+
+        for (int i = 0; i < nieuweRoute.length; i++) {
+            nieuweRoute[i] = array.get(i);
+        }
+
+        kandidaatRoute.set_route(nieuweRoute);
+        return kandidaatRoute;
+    }
+
+    private ArrayList<KandidaatRoute> mutaties(int kanditaten) {
+        ArrayList<KandidaatRoute> _kandidaten = new ArrayList<>();
+
+        for (int i = 0; i < kanditaten; i++) {
+            KandidaatRoute nieuweKandidaat = new KandidaatRoute();
+            nieuweKandidaat.set_route(elite.get_route());
+            muteer(nieuweKandidaat);
+            _kandidaten.add(nieuweKandidaat);
+            evalueerKandidaat(nieuweKandidaat);
+        }
+
+        return _kandidaten;
     }
 
     public void volgendeEpoch() {}
+
+    public void printDistances() {
+        System.out.print("   ");
+        for (int j = 1; j < 251; j++) {
+            if (j < 10) {
+                System.out.print(j + "   ");
+            } else if (j < 100) {
+                System.out.print(j + "  ");
+            } else {
+                System.out.print(j + " ");
+            }
+        }
+        System.out.println();
+
+        int rij = 1;
+        for (int[] i : distances) {
+            System.out.print(rij + ": ");
+            for (int j : i) {
+                if (j < 10) {
+                    System.out.print(j + "   ");
+                } else if (j < 100) {
+                    System.out.print(j + "  ");
+                } else {
+                    System.out.print(j + " ");
+                }
+            }
+            System.out.println();
+
+            rij++;
+        }
+    }
 
 }
