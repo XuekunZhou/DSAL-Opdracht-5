@@ -28,7 +28,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        RouteCalc alg = new RouteCalc();
-        alg.readSituation("1.txt");
+        new RouteCalc(0, 5);
     }
 }
