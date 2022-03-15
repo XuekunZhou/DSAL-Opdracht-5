@@ -11,7 +11,13 @@ public class RouteCalc {
     private int[] packages;
     private int[][] distances;
 
-    public RouteCalc(){
+    private int EPOCHS;
+    private int epochTeller;
+    private int KANDIDATEN;
+
+    public RouteCalc(){}
+
+    public RouteCalc(int epochs, int kandidaten){
 
     }
 
@@ -42,41 +48,23 @@ public class RouteCalc {
         }
     }
 
-    public void printDestinations() {
-        System.out.print("Desitinations: ");
-        for (int i : destinations) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
+
+    public void bepaalRoute(){}
+
+    public void evalueerKandidaat(KandidaatRoute kandidaatRoute){}
+
+    public void evalueerEpoch(){}
+
+    public KandidaatRoute randomKandidaat() {
+        return null;
     }
 
-    public void printPackages() {
-        System.out.print("Packages: ");
-        for (int i : packages) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
+    public void startSituatie() {}
+
+    public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {
+        return null;
     }
 
-    public void printDistances() {
-        System.out.println("Distances: ");
-        for (int[] i: distances) {
-            for (int j: i) {
-                if (j < 10) {
-                    System.out.print(j + "   ");
-                }
-                else if (j < 100 ){
-                    System.out.print(j + "  ");
-                }
-                else {
-                    System.out.print(j + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
+    public void volgendeEpoch() {}
 
-    public void printNumberOfDestinations() {
-        System.out.println(distances.length);
-    }
 }
