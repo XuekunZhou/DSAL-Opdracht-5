@@ -26,14 +26,43 @@ public class RouteCalc {
         startSituatie(kandidaten);
         epochTeller = 0;
 
+        printKandidaten();
+
         bepaalRoute();
 
         while (epochTeller < epochs) {
             epochTeller++;
 
             KANDIDATEN = mutaties(kandidaten);
+            System.out.println("Epoch: " + epochTeller);
+            printKandidaten();
             bepaalRoute();
         }
+    }
+
+    private void printKandidaten() {
+        int kandidaat = 0;
+        System.out.println("De kandidaten zijn:");
+        for (KandidaatRoute route : KANDIDATEN) {
+            if (kandidaat < 10) {
+                System.out.print("Route " + kandidaat++ + ":   ");
+            } else if (kandidaat < 100) {
+                System.out.print("Route " + kandidaat++ + ":  ");
+            } else {
+                System.out.print("Route " + kandidaat++ + ": ");
+            }
+            for (int i : route.get_route()) {
+                if (i < 10) {
+                    System.out.print(i + "   ");
+                } else if (i < 100) {
+                    System.out.print(i + "  ");
+                } else {
+                    System.out.print(i + " ");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     public void readSituation(String file){
@@ -82,7 +111,9 @@ public class RouteCalc {
         }
         System.out.println();
         System.out.println("Score: " + elite.getScore());
-
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     public void evalueerKandidaat(KandidaatRoute kandidaatRoute) {
@@ -140,12 +171,7 @@ public class RouteCalc {
             array.add(punten);
         }
 
-        int randIndex = 0;
-        while (randIndex == 0) {
-            randIndex = rand.nextInt(array.size() - 1);
-        }
-
-        array.add(rand.nextInt(randIndex), rand.nextInt(TOTALDEST -1) + 1);
+        array.add(rand.nextInt(array.size() - 2) + 1, rand.nextInt(TOTALDEST -1) + 1);
 
         int[] nieuweRoute = new int[array.size()];
 

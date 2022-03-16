@@ -28,8 +28,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        RouteCalc alg = new RouteCalc(10, 10, 1);
+        RouteCalc alg = new RouteCalc(5, 100, 3);
 
-        alg.printDistances();
+//        alg.printDistances();
     }
 }
