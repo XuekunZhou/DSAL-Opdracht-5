@@ -192,8 +192,15 @@ public class RouteCalc {
         for (int punten : kandidaatRoute.get_route()) {
             array.add(punten);
         }
+        int randIndex = rand.nextInt(array.size() - 2) + 1;
+        int randDestination = rand.nextInt(TOTALDEST -1) + 1;
 
-        array.add(rand.nextInt(array.size() - 2) + 1, rand.nextInt(TOTALDEST -1) + 1);
+        while (kandidaatRoute.get_route()[randIndex + 1] == randDestination) {
+            randIndex = rand.nextInt(array.size() - 2) + 1;
+            randDestination = rand.nextInt(TOTALDEST -1) + 1;
+        }
+
+        array.add(randIndex, randDestination);
 
         int[] nieuweRoute = new int[array.size()];
 
