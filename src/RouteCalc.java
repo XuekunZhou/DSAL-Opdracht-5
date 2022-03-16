@@ -12,57 +12,34 @@ public class RouteCalc {
 
     private int EPOCHS;
     private int epochTeller;
-    private ArrayList<KandidaatRoute> KANDIDATEN;
+    private int KANDIDATEN;
+    private ArrayList<KandidaatRoute> epochKandidaten;
     private KandidaatRoute elite;
 
-    public RouteCalc() {
-        KANDIDATEN = new ArrayList<>();
-    }
 
     public RouteCalc(int epochs, int kandidaten, int situatie) {
         String file = situatie + ".txt";
         readSituation(file);
-        KANDIDATEN = new ArrayList<>();
-        startSituatie(kandidaten);
+        EPOCHS = epochs;
+        KANDIDATEN = kandidaten;
+        epochKandidaten = new ArrayList<>();
+        startSituatie();
         epochTeller = 0;
 
+        evalueerEpoch();
         printKandidaten();
-
         bepaalRoute();
 
-        while (epochTeller < epochs) {
+        while (epochTeller < EPOCHS) {
             epochTeller++;
 
-            KANDIDATEN = mutaties(kandidaten);
+            volgendeEpoch();
             System.out.println("Epoch: " + epochTeller);
+            evalueerEpoch();
             printKandidaten();
             bepaalRoute();
-        }
-    }
 
-    private void printKandidaten() {
-        int kandidaat = 0;
-        System.out.println("De kandidaten zijn:");
-        for (KandidaatRoute route : KANDIDATEN) {
-            if (kandidaat < 10) {
-                System.out.print("Route " + kandidaat++ + ":   ");
-            } else if (kandidaat < 100) {
-                System.out.print("Route " + kandidaat++ + ":  ");
-            } else {
-                System.out.print("Route " + kandidaat++ + ": ");
-            }
-            for (int i : route.get_route()) {
-                if (i < 10) {
-                    System.out.print(i + "   ");
-                } else if (i < 100) {
-                    System.out.print(i + "  ");
-                } else {
-                    System.out.print(i + " ");
-                }
-            }
-            System.out.println();
         }
-        System.out.println();
     }
 
     public void readSituation(String file){
@@ -92,9 +69,37 @@ public class RouteCalc {
         }
     }
 
+    public void evalueerEpoch() {
+        for (KandidaatRoute kandidaatRoute : epochKandidaten) {
+            evalueerKandidaat(kandidaatRoute);
+        }
+    }
+
+    public void evalueerKandidaat(KandidaatRoute kandidaatRoute) {
+        int pakketscore = 25;
+        int pakketpositie = 1;
+        int score = 0;
+        int vorigePunt = 0;
+
+        for (int huidigePunt : kandidaatRoute.get_route()) {
+            int afstand = distances[vorigePunt][huidigePunt - 1];
+            score += afstand;
+
+            for (DestinationPackage item : destinationPackageList()) {
+                if (item.getDestination() == huidigePunt -1) {
+                    score -= item.getPackages() * pakketscore / pakketpositie;
+                }
+            }
+
+            pakketpositie++;
+            vorigePunt = huidigePunt - 1;
+        }
+        kandidaatRoute.setScore(score);
+    }
+
     public void bepaalRoute() {
-        Collections.sort(KANDIDATEN);
-        KandidaatRoute besteRoute = KANDIDATEN.get(0);
+        Collections.sort(epochKandidaten);
+        KandidaatRoute besteRoute = epochKandidaten.get(0);
 
         if (elite == null) {
             elite = besteRoute;
@@ -106,9 +111,7 @@ public class RouteCalc {
         }
 
         System.out.println("De beste route is:");
-        for (int punten : elite.get_route()) {
-            System.out.print(punten + " ");
-        }
+        printKandidaat(elite);
         System.out.println();
         System.out.println("Score: " + elite.getScore());
         System.out.println();
@@ -116,24 +119,14 @@ public class RouteCalc {
         System.out.println();
     }
 
-    public void evalueerKandidaat(KandidaatRoute kandidaatRoute) {
-        int score = 0;
-        int vorigePunt = 0;
-        for (int huidigePunt : kandidaatRoute.get_route()) {
-            int afstand = distances[vorigePunt][huidigePunt - 1];
-            score += afstand;
-            vorigePunt = huidigePunt - 1;
-        }
-        kandidaatRoute.setScore(score);
-    }
+    private ArrayList<DestinationPackage> destinationPackageList() {
+        ArrayList<DestinationPackage> destinationList = new ArrayList<>();
 
-    public void evalueerEpoch(){}
-
-    private ArrayList<Integer> destinationList() {
-        ArrayList<Integer> destinationList = new ArrayList<>();
-
-        for (int i = 1; i < destinations.length; i++) {
-            destinationList.add((destinations[i]));
+        for (int i = 0; i < destinations.length; i++) {
+            DestinationPackage destinationPackage = new DestinationPackage();
+            destinationPackage.setDestination(destinations[i]);
+            destinationPackage.setPackages(packages[i]);
+            destinationList.add(destinationPackage);
         }
 
         return destinationList;
@@ -141,24 +134,23 @@ public class RouteCalc {
 
     public KandidaatRoute randomKandidaat() {
         KandidaatRoute kandidaatRoute = new KandidaatRoute();
-        ArrayList<Integer> destinationList = destinationList();
+        ArrayList<DestinationPackage> destinationList = destinationPackageList();
         Collections.shuffle(destinationList);
 
         int[] route = new int[destinations.length];
         route[0] = destinations[0];
         for (int i = 1; i < route.length; i++) {
-            route[i] = destinationList.get(i - 1);
+            route[i] = destinationList.get(i - 1).getDestination();
         }
 
         kandidaatRoute.set_route(route);
         return kandidaatRoute;
     }
 
-    public void startSituatie(int kandidaten) {
-        for (int kandidaat = 0; kandidaat < kandidaten; kandidaat++) {
+    public void startSituatie() {
+        for (int kandidaat = 0; kandidaat < KANDIDATEN; kandidaat++) {
             KandidaatRoute route = randomKandidaat();
-            evalueerKandidaat(route);
-            KANDIDATEN.add(route);
+            epochKandidaten.add(route);
         }
     }
 
@@ -170,8 +162,15 @@ public class RouteCalc {
         for (int punten : kandidaatRoute.get_route()) {
             array.add(punten);
         }
+        int randIndex = rand.nextInt(array.size() - 2) + 1;
+        int randDestination = rand.nextInt(TOTALDEST -1) + 1;
 
-        array.add(rand.nextInt(array.size() - 2) + 1, rand.nextInt(TOTALDEST -1) + 1);
+        while (kandidaatRoute.get_route()[randIndex + 1] == randDestination) {
+            randIndex = rand.nextInt(array.size() - 2) + 1;
+            randDestination = rand.nextInt(TOTALDEST -1) + 1;
+        }
+
+        array.add(randIndex, randDestination);
 
         int[] nieuweRoute = new int[array.size()];
 
@@ -183,21 +182,48 @@ public class RouteCalc {
         return kandidaatRoute;
     }
 
-    private ArrayList<KandidaatRoute> mutaties(int kanditaten) {
+    private void volgendeEpoch() {
         ArrayList<KandidaatRoute> _kandidaten = new ArrayList<>();
 
-        for (int i = 0; i < kanditaten; i++) {
+        for (int i = 0; i < epochKandidaten.size(); i++) {
             KandidaatRoute nieuweKandidaat = new KandidaatRoute();
             nieuweKandidaat.set_route(elite.get_route());
             muteer(nieuweKandidaat);
             _kandidaten.add(nieuweKandidaat);
-            evalueerKandidaat(nieuweKandidaat);
         }
 
-        return _kandidaten;
+        epochKandidaten = _kandidaten;
     }
 
-    public void volgendeEpoch() {}
+    private void printKandidaten() {
+        int kandidaat = 0;
+        System.out.println("De kandidaten zijn:");
+        for (KandidaatRoute route : epochKandidaten) {
+            if (kandidaat < 10) {
+                System.out.print("Route " + kandidaat++ + ":   ");
+            } else if (kandidaat < 100) {
+                System.out.print("Route " + kandidaat++ + ":  ");
+            } else {
+                System.out.print("Route " + kandidaat++ + ": ");
+            }
+            printKandidaat(route);
+        }
+        System.out.println();
+    }
+
+    public void printKandidaat(KandidaatRoute route) {
+        for (int i : route.get_route()) {
+            if (i < 10) {
+                System.out.print(i + "   ");
+            } else if (i < 100) {
+                System.out.print(i + "  ");
+            } else {
+                System.out.print(i + " ");
+            }
+        }
+        System.out.println();
+    }
+
 
     public void printDistances() {
         System.out.print("   ");
@@ -227,6 +253,28 @@ public class RouteCalc {
             System.out.println();
 
             rij++;
+        }
+    }
+
+    private class DestinationPackage {
+        private int destination;
+        private int packages;
+
+
+        public int getDestination() {
+            return destination;
+        }
+
+        public void setDestination(int destination) {
+            this.destination = destination;
+        }
+
+        public int getPackages() {
+            return packages;
+        }
+
+        public void setPackages(int packages) {
+            this.packages = packages;
         }
     }
 
