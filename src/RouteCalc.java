@@ -16,9 +16,6 @@ public class RouteCalc {
     private ArrayList<KandidaatRoute> epochKandidaten;
     private KandidaatRoute elite;
 
-    public RouteCalc() {
-        epochKandidaten = new ArrayList<>();
-    }
 
     public RouteCalc(int epochs, int kandidaten, int situatie) {
         String file = situatie + ".txt";
@@ -43,31 +40,6 @@ public class RouteCalc {
             bepaalRoute();
 
         }
-    }
-
-    private void printKandidaten() {
-        int kandidaat = 0;
-        System.out.println("De kandidaten zijn:");
-        for (KandidaatRoute route : epochKandidaten) {
-            if (kandidaat < 10) {
-                System.out.print("Route " + kandidaat++ + ":   ");
-            } else if (kandidaat < 100) {
-                System.out.print("Route " + kandidaat++ + ":  ");
-            } else {
-                System.out.print("Route " + kandidaat++ + ": ");
-            }
-            for (int i : route.get_route()) {
-                if (i < 10) {
-                    System.out.print(i + "   ");
-                } else if (i < 100) {
-                    System.out.print(i + "  ");
-                } else {
-                    System.out.print(i + " ");
-                }
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 
     public void readSituation(String file){
@@ -139,9 +111,7 @@ public class RouteCalc {
         }
 
         System.out.println("De beste route is:");
-        for (int punten : elite.get_route()) {
-            System.out.print(punten + " ");
-        }
+        printKandidaat(elite);
         System.out.println();
         System.out.println("Score: " + elite.getScore());
         System.out.println();
@@ -192,8 +162,15 @@ public class RouteCalc {
         for (int punten : kandidaatRoute.get_route()) {
             array.add(punten);
         }
+        int randIndex = rand.nextInt(array.size() - 2) + 1;
+        int randDestination = rand.nextInt(TOTALDEST -1) + 1;
 
-        array.add(rand.nextInt(array.size() - 2) + 1, rand.nextInt(TOTALDEST -1) + 1);
+        while (kandidaatRoute.get_route()[randIndex + 1] == randDestination) {
+            randIndex = rand.nextInt(array.size() - 2) + 1;
+            randDestination = rand.nextInt(TOTALDEST -1) + 1;
+        }
+
+        array.add(randIndex, randDestination);
 
         int[] nieuweRoute = new int[array.size()];
 
@@ -206,13 +183,45 @@ public class RouteCalc {
     }
 
     private void volgendeEpoch() {
-        for (int i = 1; i < epochKandidaten.size(); i++) {
-            if (i < KANDIDATEN / 2) {
-                epochKandidaten.set(i, muteer(epochKandidaten.get(i)));
+        ArrayList<KandidaatRoute> _kandidaten = new ArrayList<>();
+
+        for (int i = 0; i < epochKandidaten.size(); i++) {
+            KandidaatRoute nieuweKandidaat = new KandidaatRoute();
+            nieuweKandidaat.set_route(elite.get_route());
+            muteer(nieuweKandidaat);
+            _kandidaten.add(nieuweKandidaat);
+        }
+
+        epochKandidaten = _kandidaten;
+    }
+
+    private void printKandidaten() {
+        int kandidaat = 0;
+        System.out.println("De kandidaten zijn:");
+        for (KandidaatRoute route : epochKandidaten) {
+            if (kandidaat < 10) {
+                System.out.print("Route " + kandidaat++ + ":   ");
+            } else if (kandidaat < 100) {
+                System.out.print("Route " + kandidaat++ + ":  ");
             } else {
-                epochKandidaten.set(i, randomKandidaat());
+                System.out.print("Route " + kandidaat++ + ": ");
+            }
+            printKandidaat(route);
+        }
+        System.out.println();
+    }
+
+    public void printKandidaat(KandidaatRoute route) {
+        for (int i : route.get_route()) {
+            if (i < 10) {
+                System.out.print(i + "   ");
+            } else if (i < 100) {
+                System.out.print(i + "  ");
+            } else {
+                System.out.print(i + " ");
             }
         }
+        System.out.println();
     }
 
 
