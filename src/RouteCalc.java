@@ -138,7 +138,7 @@ public class RouteCalc {
     private ArrayList<DestinationPackage> destinationPackageList() {
         ArrayList<DestinationPackage> destinationList = new ArrayList<>();
 
-        for (int i = 0; i < destinations.length; i++) {
+        for (int i = 1; i < destinations.length; i++) {
             DestinationPackage destinationPackage = new DestinationPackage();
             destinationPackage.setDestination(destinations[i]);
             destinationPackage.setPackages(packages[i]);
