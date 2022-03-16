@@ -3,7 +3,7 @@ School assignment
 
 
 EvalueerKandidaat:
-De score wordt bepaalt door alle afstanden van de route op te tellen. Per pakketje gaat er 25 punten * (1 / positie in de route) af.
+De score wordt bepaalt door alle afstanden van de route op te tellen. Per pakketje gaat er 25 punten * (1 / positie in de route) af. Wanneer een bestemming met pakketjes al geweest is gaat er niets meer van de score af.
 
 
 startSituatie:
@@ -19,4 +19,4 @@ Maakt een route dat alleen de bestemmingen bevat van de pakketjes. De route begi
 
 
 muteer:
-Voegd op een willekeurige plek in de route een willekeurige bestemming, behalve voor de eerste bestemming en na de laatste bestemming.
+Voegd op een willekeurige plek in de route een willekeurige bestemming, behalve voor de eerste bestemming en na de laatste bestemming. Dezelfde bestemmingen kunnen niet direct achter elkaar komen.
