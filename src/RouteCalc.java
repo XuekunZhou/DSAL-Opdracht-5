@@ -77,10 +77,22 @@ public class RouteCalc {
 
     public void evalueerKandidaat(KandidaatRoute kandidaatRoute) {
         int pakketscore = 25;
+        int vermistPakket = 400;
+        int valseStart = 10000;
         int pakketpositie = 1;
         int score = 0;
         int vorigePunt = 0;
         ArrayList<Integer> bestemmingenGeweest = new ArrayList<>();
+
+        if (kandidaatRoute.get_route()[0] != 1 ) {
+            score += valseStart;
+        }
+
+        for (DestinationPackage item : destinationPackageList()) {
+            if (!kandidaatRoute.get_routeAsArrayList().contains(item.destination)) {
+                score += item.packages * vermistPakket;
+            }
+        }
 
         for (int huidigePunt : kandidaatRoute.get_route()) {
             int afstand = distances[vorigePunt][huidigePunt - 1];
@@ -138,13 +150,15 @@ public class RouteCalc {
 
     public KandidaatRoute randomKandidaat() {
         KandidaatRoute kandidaatRoute = new KandidaatRoute();
-        ArrayList<DestinationPackage> destinationList = destinationPackageList();
-        Collections.shuffle(destinationList);
 
-        int[] route = new int[destinations.length];
-        route[0] = destinations[0];
-        for (int i = 1; i < route.length; i++) {
-            route[i] = destinationList.get(i - 1).getDestination();
+        Random rand = new Random();
+
+        int routeGrootte = rand.nextInt(15) + 5;
+
+        int[] route = new int[routeGrootte];
+
+        for (int i = 0; i < routeGrootte; i++) {
+            route[i] = rand.nextInt(TOTALDEST - 1) + 1;
         }
 
         kandidaatRoute.set_route(route);
