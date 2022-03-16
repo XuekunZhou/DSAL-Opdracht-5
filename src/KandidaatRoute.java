@@ -30,4 +30,16 @@ public class KandidaatRoute implements Comparable{
     public void set_route(int[] route) {
         _route = route;
     }
+    public void printKandidaat() {
+        for (int i : _route) {
+            if (i < 10) {
+                System.out.print(i + "   ");
+            } else if (i < 100) {
+                System.out.print(i + "  ");
+            } else {
+                System.out.print(i + " ");
+            }
+        }
+        System.out.println();
+    }
 }

@@ -27,7 +27,7 @@ public class RouteCalc {
         epochTeller = 0;
 
         evalueerEpoch();
-        printKandidaten();
+        printEpochKandidaten();
         bepaalRoute();
 
         while (epochTeller < EPOCHS) {
@@ -36,7 +36,7 @@ public class RouteCalc {
             volgendeEpoch();
             System.out.println("Epoch: " + epochTeller);
             evalueerEpoch();
-            printKandidaten();
+            printEpochKandidaten();
             bepaalRoute();
 
         }
@@ -115,7 +115,7 @@ public class RouteCalc {
         }
 
         System.out.println("De beste route is:");
-        printKandidaat(elite);
+        elite.printKandidaat();
         System.out.println();
         System.out.println("Score: " + elite.getScore());
         System.out.println();
@@ -199,7 +199,7 @@ public class RouteCalc {
         epochKandidaten = _kandidaten;
     }
 
-    private void printKandidaten() {
+    private void printEpochKandidaten() {
         int kandidaat = 0;
         System.out.println("De kandidaten zijn:");
         for (KandidaatRoute route : epochKandidaten) {
@@ -210,20 +210,7 @@ public class RouteCalc {
             } else {
                 System.out.print("Route " + kandidaat++ + ": ");
             }
-            printKandidaat(route);
-        }
-        System.out.println();
-    }
-
-    public void printKandidaat(KandidaatRoute route) {
-        for (int i : route.get_route()) {
-            if (i < 10) {
-                System.out.print(i + "   ");
-            } else if (i < 100) {
-                System.out.print(i + "  ");
-            } else {
-                System.out.print(i + " ");
-            }
+            route.printKandidaat();
         }
         System.out.println();
     }
