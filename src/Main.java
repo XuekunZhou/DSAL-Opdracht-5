@@ -28,7 +28,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        RouteCalc alg = new RouteCalc(20, 100, 2);
+        RouteCalc alg = new RouteCalc(2, 10, 1);
 
 //        alg.printDistances();
     }
