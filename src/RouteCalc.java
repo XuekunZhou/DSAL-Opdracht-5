@@ -80,17 +80,21 @@ public class RouteCalc {
         int pakketpositie = 1;
         int score = 0;
         int vorigePunt = 0;
+        ArrayList<Integer> bestemmingenGeweest = new ArrayList<>();
 
         for (int huidigePunt : kandidaatRoute.get_route()) {
             int afstand = distances[vorigePunt][huidigePunt - 1];
             score += afstand;
 
-            for (DestinationPackage item : destinationPackageList()) {
-                if (item.getDestination() == huidigePunt -1) {
-                    score -= item.getPackages() * pakketscore / pakketpositie;
+            if (!bestemmingenGeweest.contains(huidigePunt)) {
+                for (DestinationPackage item : destinationPackageList()) {
+                    if (item.getDestination() == huidigePunt -1) {
+                        score -= item.getPackages() * pakketscore / pakketpositie;
+                    }
                 }
             }
 
+            bestemmingenGeweest.add(huidigePunt);
             pakketpositie++;
             vorigePunt = huidigePunt - 1;
         }
