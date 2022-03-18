@@ -81,7 +81,7 @@ public class RouteCalc {
         int valseStart = 10000;
         int pakketpositie = 1;
         int score = 0;
-        int vorigePunt = 0;
+        int vorigePunt = 1;
         ArrayList<Integer> bestemmingenGeweest = new ArrayList<>();
 
         if (kandidaatRoute.get_route()[0] != 1 ) {
@@ -95,12 +95,12 @@ public class RouteCalc {
         }
 
         for (int huidigePunt : kandidaatRoute.get_route()) {
-            int afstand = distances[vorigePunt][huidigePunt - 1];
+            int afstand = distances[vorigePunt - 1][huidigePunt - 1];
             score += afstand;
 
             if (!bestemmingenGeweest.contains(huidigePunt)) {
                 for (DestinationPackage item : destinationPackageList()) {
-                    if (item.getDestination() == huidigePunt -1) {
+                    if (item.getDestination() == huidigePunt) {
                         score -= item.getPackages() * pakketscore / pakketpositie;
                     }
                 }
@@ -108,7 +108,7 @@ public class RouteCalc {
 
             bestemmingenGeweest.add(huidigePunt);
             pakketpositie++;
-            vorigePunt = huidigePunt - 1;
+            vorigePunt = huidigePunt;
         }
         kandidaatRoute.setScore(score);
     }
@@ -183,7 +183,7 @@ public class RouteCalc {
         int randIndex = rand.nextInt(array.size() - 2) + 1;
         int randDestination = rand.nextInt(TOTALDEST -1) + 1;
 
-        while (kandidaatRoute.get_route()[randIndex + 1] == randDestination) {
+        while (kandidaatRoute.get_route()[randIndex + 1] == randDestination && kandidaatRoute.get_route()[randIndex] == randDestination) {
             randIndex = rand.nextInt(array.size() - 2) + 1;
             randDestination = rand.nextInt(TOTALDEST -1) + 1;
         }
