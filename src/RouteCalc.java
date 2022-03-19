@@ -201,16 +201,13 @@ public class RouteCalc {
     }
 
     private void volgendeEpoch() {
-        ArrayList<KandidaatRoute> _kandidaten = new ArrayList<>();
-
-        for (int i = 0; i < epochKandidaten.size(); i++) {
-            KandidaatRoute nieuweKandidaat = new KandidaatRoute();
-            nieuweKandidaat.set_route(elite.get_route());
-            muteer(nieuweKandidaat);
-            _kandidaten.add(nieuweKandidaat);
+        for (int i = 1; i < epochKandidaten.size(); i++) {
+            if (i < KANDIDATEN * 0.45) {
+                epochKandidaten.set(i, muteer(epochKandidaten.get(i)));
+            } else {
+                epochKandidaten.set(i, randomKandidaat());
+            }
         }
-
-        epochKandidaten = _kandidaten;
     }
 
     private void printEpochKandidaten() {
