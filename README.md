@@ -27,10 +27,12 @@ Voegd op een willekeurige plek in de route een willekeurige bestemming, behalve 
 volgendeEpoch:
 Afhankelijk van de versie doet hij
 
-  versie 2.5 (main):
+  main:
   Vult de kandidaten van de volgende epoch met mutaties van de elite
   
   versie 3:
-  Vult de helft van de volgende epoch kandidaten met mutaties van de beste helft van de vorige epoch en vult de rest van de kandidaten met nieuwe random routes die
-  gemaakt zijn met randomKandidaat method.
+  Vult de helft van de volgende epoch kandidaten met mutaties van de beste helft van de vorige epoch en vult de rest van de kandidaten 
+  met nieuwe random routes die gemaakt zijn met randomKandidaat method.
 
+Opmerking: 
+Versie 4 is bijna hetzelfde als de main maar de randomKandidaat is zuiver random. Bij evalueerKandidaat als de eerste index van de route niet 1 is, wordt er 10000 punten aan de score toegevoegd en voor elke pakketje dat niet bezorgd is 400 punten.
