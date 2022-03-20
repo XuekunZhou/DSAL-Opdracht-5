@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class KandidaatRoute implements Comparable{
 
     private int _score;
@@ -41,5 +43,14 @@ public class KandidaatRoute implements Comparable{
             }
         }
         System.out.println();
+    }
+
+    public ArrayList<Integer> get_routeAsArrayList() {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        for (int i : _route) {
+            arrayList.add(i);
+        }
+
+        return arrayList;
     }
 }
