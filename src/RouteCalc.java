@@ -76,7 +76,7 @@ public class RouteCalc {
     }
 
     public void evalueerKandidaat(KandidaatRoute kandidaatRoute) {
-        int pakketscore = 25;
+        int pakketscore = 100;
         int vermistPakket = 400;
         int valseStart = 10000;
         int pakketpositie = 1;
@@ -183,7 +183,7 @@ public class RouteCalc {
         int randIndex = rand.nextInt(array.size() - 2) + 1;
         int randDestination = rand.nextInt(TOTALDEST -1) + 1;
 
-        while (kandidaatRoute.get_route()[randIndex + 1] == randDestination && kandidaatRoute.get_route()[randIndex] == randDestination) {
+        while (kandidaatRoute.get_route()[randIndex] == randDestination || kandidaatRoute.get_route()[randIndex - 1] == randDestination) {
             randIndex = rand.nextInt(array.size() - 2) + 1;
             randDestination = rand.nextInt(TOTALDEST -1) + 1;
         }
@@ -201,9 +201,17 @@ public class RouteCalc {
     }
 
     private void volgendeEpoch() {
-        for (int i = 1; i < epochKandidaten.size(); i++) {
-            if (i < KANDIDATEN * 0.45) {
-                epochKandidaten.set(i, muteer(epochKandidaten.get(i)));
+        ArrayList<KandidaatRoute> Mutaties = new ArrayList<>();
+        for (int i = 0 ; i < KANDIDATEN * 0.45; i++) {
+            KandidaatRoute kr = epochKandidaten.get(i).createCopy();
+            Mutaties.add(muteer(kr));
+        }
+        int j = 0;
+        for (int i = (int) (KANDIDATEN * 0.45); i < KANDIDATEN; i++) {
+            if (i <= KANDIDATEN * 0.9 - 1) {
+                epochKandidaten.set(i, Mutaties.get(j));
+                j++;
+
             } else {
                 epochKandidaten.set(i, randomKandidaat());
             }
