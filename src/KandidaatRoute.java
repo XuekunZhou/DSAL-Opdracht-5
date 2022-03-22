@@ -53,4 +53,14 @@ public class KandidaatRoute implements Comparable{
 
         return arrayList;
     }
+
+    public KandidaatRoute createCopy () {
+        KandidaatRoute route = new KandidaatRoute();
+        route._route = new int[this._route.length];
+        for (int i = 0; i < this._route.length; i++) {
+            route._route[i] = this._route[i];
+        }
+
+        return route;
+    }
 }
