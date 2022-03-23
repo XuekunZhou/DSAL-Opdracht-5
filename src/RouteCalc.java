@@ -27,7 +27,7 @@ public class RouteCalc {
         epochTeller = 0;
 
         evalueerEpoch();
-        printEpochKandidaten();
+//        printEpochKandidaten();
         bepaalRoute();
 
         while (epochTeller < EPOCHS) {
@@ -36,7 +36,7 @@ public class RouteCalc {
             volgendeEpoch();
             System.out.println("Epoch: " + epochTeller);
             evalueerEpoch();
-            printEpochKandidaten();
+//            printEpochKandidaten();
             bepaalRoute();
 
         }
