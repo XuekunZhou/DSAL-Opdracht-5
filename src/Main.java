@@ -28,7 +28,22 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        RouteCalc alg = new RouteCalc(1000, 1000, 1);
+        int[][] situatie1 = new int[10][10];
+        int[][] situatie2 = new int[10][10];
+        int[][] situatie3 = new int[10][10];
+
+        for (int i = 1; i < 11; i++) {
+            for (int j = 1; j < 11; j++) {
+                situatie1[i - 1][j - 1] = new RouteCalc(i * 100, j * 100, 1).getElite().getScore();
+            }
+        }
+
+        for (int[] i : situatie1) {
+            for (int j : i) {
+                System.out.print(j);
+            }
+            System.out.println();
+        }
 
 //        alg.printDistances();
     }

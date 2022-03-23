@@ -266,6 +266,10 @@ public class RouteCalc {
         }
     }
 
+    public KandidaatRoute getElite() {
+        return elite;
+    }
+
     private class DestinationPackage {
         private int destination;
         private int packages;
