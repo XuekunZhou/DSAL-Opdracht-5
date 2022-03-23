@@ -1,5 +1,5 @@
 # DSAL-Opdracht-5
-School assignment
+In de route analyse matrix excel bestand vind je een aantal matrixen met daarin de scores van de beste gevonden routes per aantal epochs en aantal kandidaten.
 
 evalueerEpoch:
 Evalueert alle kandidaatroutes in de epoch met de evalueerKandidaat method.
