@@ -26,3 +26,5 @@ Voegd op een willekeurige plek in de route een willekeurige bestemming, behalve 
 
 volgendeEpoch:
 Neemt de top 45% mee naar de volgende epoch en vult de rest van de kandidaten met nieuwe random kandidaten.
+
+

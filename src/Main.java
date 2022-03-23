@@ -29,14 +29,14 @@ public class Main {
 
     public static void main(String[] args) {
         int[][] situatie1 = new int[10][10];
-        int[][] situatie2 = new int[10][10];
-        int[][] situatie3 = new int[10][10];
 
-        for (int i = 1; i < 11; i++) {
+
+
+        for (int i = 5; i < 11; i++) {
             System.out.println("Aantal epochs: " + i * 100);
             for (int j = 1; j < 11; j++) {
                 System.out.println("Aantal kandidaten: " + j * 100);
-                situatie1[i - 1][j - 1] = new RouteCalc(i * 100, j * 100, 1).getElite().getScore();
+                situatie1[i - 1][j - 1] = new RouteCalc(i * 100, j * 100, 3).getElite().getScore();
             }
         }
 
